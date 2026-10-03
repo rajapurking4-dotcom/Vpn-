@@ -1,0 +1,8 @@
+{
+  "name": "Remix BanglaVPN 33 - Server Asset Manager \u0026 Config Hub",
+  "description": "Manage, generate, test, and export OpenVPN server configurations for Android app/src/main/assets/servers with live mobile simulator, syntax validator, and BDIX routing support.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
