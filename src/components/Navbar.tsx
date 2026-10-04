@@ -99,8 +99,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                 : 'border-transparent text-slate-400 hover:text-slate-200'
             }`}
           >
-            <PackageCheck className="w-4 h-4" />
-            <span>apk/debug/</span>
+            <Terminal className="w-4 h-4 text-emerald-400" />
+            <span>ADB & APK (debug)</span>
           </button>
 
           <button
@@ -168,7 +168,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           onClick={() => setActiveTab('apk')}
           className={`px-2.5 py-1.5 rounded-lg flex items-center gap-1 ${activeTab === 'apk' ? 'text-emerald-400 bg-slate-900 font-semibold' : 'hover:text-slate-200'}`}
         >
-          <span>apk/debug/</span>
+          <span>ADB & APK</span>
         </button>
         <button
           onClick={() => setActiveTab('simulator')}

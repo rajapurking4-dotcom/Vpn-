@@ -87,3 +87,44 @@ export async function downloadDebugApk(servers: ServerConfig[]) {
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
 }
+
+/**
+ * Downloads the Gradle output-metadata.json artifact descriptor.
+ */
+export function downloadMetadataJson() {
+  const jsonContent = JSON.stringify(
+    {
+      version: 3,
+      artifactType: {
+        type: 'APK',
+        kind: 'Directory',
+      },
+      applicationId: 'com.banglavpn33.vpn',
+      variantName: 'debug',
+      elements: [
+        {
+          type: 'SINGLE',
+          filters: [],
+          attributes: [],
+          versionCode: 1,
+          versionName: '1.0.0',
+          outputFile: 'app-debug.apk',
+        },
+      ],
+      elementType: 'File',
+    },
+    null,
+    2
+  );
+
+  const blob = new Blob([jsonContent], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'output-metadata.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+

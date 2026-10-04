@@ -19,7 +19,7 @@ import { FolderCheck, Smartphone, Check, Download, PackageCheck, Terminal, Serve
 export default function App() {
   const [servers, setServers] = useState<ServerConfig[]>(INITIAL_SERVERS);
   const [selectedServer, setSelectedServer] = useState<ServerConfig>(INITIAL_SERVERS[4]); // Defaults to Bangladesh (Dhaka BDIX)
-  const [activeTab, setActiveTab] = useState<NavTab>('wg-setup');
+  const [activeTab, setActiveTab] = useState<NavTab>('apk');
   const [isNewServerModalOpen, setIsNewServerModalOpen] = useState(false);
   const [editingServer, setEditingServer] = useState<ServerConfig | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);

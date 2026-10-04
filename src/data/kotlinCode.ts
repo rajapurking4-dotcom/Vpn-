@@ -135,8 +135,9 @@ class MainActivity : AppCompatActivity() {
     private fun loadServersFromAssets() {
         try {
             // List all files in the assets/servers directory
-            val files = assets.list("servers") ?: emptyArray()
-            val serverList = files.filter { it.endsWith(".conf") || it.endsWith(".ovpn") }
+            val context = this
+            val serverFiles = context.assets.list("servers") ?: emptyArray()
+            val serverList = serverFiles.filter { it.endsWith(".conf") || it.endsWith(".ovpn") }
 
             if (serverList.isEmpty()) {
                 Toast.makeText(this, "No server configs found in assets/servers", Toast.LENGTH_LONG).show()
@@ -146,7 +147,9 @@ class MainActivity : AppCompatActivity() {
             // Setup RecyclerView with ServerAdapter
             val adapter = ServerAdapter(serverList) { selectedFile ->
                 selectedServerFile = selectedFile
-                Toast.makeText(this, "Selected: \$selectedFile", Toast.LENGTH_SHORT).show()
+                // Load config text directly using context.assets.open
+                val config = context.assets.open("servers/" + selectedFile).bufferedReader().use { it.readText() }
+                Toast.makeText(this, "Selected: \${selectedFile} (\${config.length} bytes)", Toast.LENGTH_SHORT).show()
             }
             // recyclerView.adapter = adapter
             // recyclerView.layoutManager = LinearLayoutManager(this)
@@ -178,13 +181,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun connectVpn() {
-        val server = selectedServerFile ?: return
-        val configContent = readAssetFile("servers/\$server")
+        val filename = selectedServerFile ?: return
+        val context = this
+        val config = context.assets.open("servers/" + filename).bufferedReader().use { it.readText() }
 
         val intent = Intent(this, BanglaVpnService::class.java).apply {
             action = BanglaVpnService.ACTION_CONNECT
-            putExtra(BanglaVpnService.EXTRA_CONFIG, configContent)
-            putExtra(BanglaVpnService.EXTRA_SERVER_NAME, server)
+            putExtra(BanglaVpnService.EXTRA_CONFIG, config)
+            putExtra(BanglaVpnService.EXTRA_SERVER_NAME, filename)
         }
         startService(intent)
         isConnected = true
@@ -196,12 +200,6 @@ class MainActivity : AppCompatActivity() {
         }
         startService(intent)
         isConnected = false
-    }
-
-    private fun readAssetFile(filePath: String): String {
-        val inputStream = assets.open(filePath)
-        val reader = BufferedReader(InputStreamReader(inputStream))
-        return reader.use { it.readText() }
     }
 }`
   },
