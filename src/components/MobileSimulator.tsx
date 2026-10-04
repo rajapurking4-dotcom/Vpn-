@@ -38,6 +38,7 @@ interface MobileSimulatorProps {
   setStatus: React.Dispatch<React.SetStateAction<VpnConnectionStatus>>;
   stats: VpnStats;
   setStats: React.Dispatch<React.SetStateAction<VpnStats>>;
+  onOpenLogs?: () => void;
 }
 
 export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
@@ -48,6 +49,7 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
   setStatus,
   stats,
   setStats,
+  onOpenLogs,
 }) => {
   const [isServerDrawerOpen, setIsServerDrawerOpen] = useState(false);
   const [currentTime, setCurrentTime] = useState('12:30');
@@ -203,13 +205,24 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
               </div>
             </div>
 
-            <button
-              onClick={() => setIsServerDrawerOpen(true)}
-              className="p-1.5 text-slate-400 hover:text-white rounded-lg bg-slate-800/60 border border-slate-700/60 transition-colors"
-              title="Select Server from assets"
-            >
-              <SlidersHorizontal className="w-3.5 h-3.5" />
-            </button>
+            <div className="flex items-center gap-1.5">
+              {onOpenLogs && (
+                <button
+                  onClick={onOpenLogs}
+                  className="p-1.5 text-slate-400 hover:text-emerald-400 rounded-lg bg-slate-800/60 border border-slate-700/60 transition-colors"
+                  title="Open Real-time Terminal Connection Logs"
+                >
+                  <Terminal className="w-3.5 h-3.5" />
+                </button>
+              )}
+              <button
+                onClick={() => setIsServerDrawerOpen(true)}
+                className="p-1.5 text-slate-400 hover:text-white rounded-lg bg-slate-800/60 border border-slate-700/60 transition-colors"
+                title="Select Server from assets"
+              >
+                <SlidersHorizontal className="w-3.5 h-3.5" />
+              </button>
+            </div>
           </div>
 
           {/* Main Content Area */}
@@ -896,7 +909,17 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
               <Terminal className="w-3.5 h-3.5" />
               <span>Android VpnService Event Stream</span>
             </span>
-            <span className="text-[10px] text-slate-500">Live Console</span>
+            {onOpenLogs ? (
+              <button
+                onClick={onOpenLogs}
+                className="text-[11px] text-emerald-400 hover:text-emerald-300 font-semibold hover:underline flex items-center gap-1 transition-colors"
+              >
+                <span>Open Full Terminal</span>
+                <span>→</span>
+              </button>
+            ) : (
+              <span className="text-[10px] text-slate-500">Live Console</span>
+            )}
           </div>
 
           <div className="space-y-1.5 max-h-44 overflow-y-auto pr-1">

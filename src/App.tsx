@@ -13,8 +13,9 @@ import { WireguardScriptViewer } from './components/WireguardScriptViewer';
 import { WgServerConfigViewer } from './components/WgServerConfigViewer';
 import { IpCheckTool } from './components/IpCheckTool';
 import { FlagshipTrioViewer } from './components/FlagshipTrioViewer';
+import { ConnectionLogs } from './components/ConnectionLogs';
 import { exportServersZip } from './utils/zipExport';
-import { FolderCheck, Smartphone, Check, Download, PackageCheck, Terminal, Server, Globe, Sparkles } from 'lucide-react';
+import { FolderCheck, Smartphone, Check, Download, PackageCheck, Terminal, Server, Globe, Sparkles, Activity } from 'lucide-react';
 
 export default function App() {
   const [servers, setServers] = useState<ServerConfig[]>(INITIAL_SERVERS);
@@ -81,6 +82,35 @@ export default function App() {
     setSelectedServer(server);
     setStats((prev) => ({ ...prev, ping: server.ping }));
     setActiveTab('simulator');
+  };
+
+  const handleToggleConnection = () => {
+    if (status === 'disconnected') {
+      setStatus('connecting');
+      setTimeout(() => {
+        setStatus('authenticating');
+        setTimeout(() => {
+          setStatus('assigning_ip');
+          setTimeout(() => {
+            setStatus('connected');
+            setStats((prev) => ({
+              ...prev,
+              downloadSpeed: 1420,
+              uploadSpeed: 410,
+              assignedIp: selectedServer.countryCode === 'BD' ? '103.134.58.109' : '10.66.66.6',
+            }));
+          }, 600);
+        }, 800);
+      }, 700);
+    } else {
+      setStatus('disconnected');
+      setStats((prev) => ({
+        ...prev,
+        downloadSpeed: 0,
+        uploadSpeed: 0,
+        connectedDuration: 0,
+      }));
+    }
   };
 
   return (
@@ -176,8 +206,23 @@ export default function App() {
               setStatus={setStatus}
               stats={stats}
               setStats={setStats}
+              onOpenLogs={() => setActiveTab('logs')}
             />
           </div>
+        )}
+
+        {activeTab === 'logs' && (
+          <ConnectionLogs
+            selectedServer={selectedServer}
+            servers={servers}
+            onSelectServer={(srv) => {
+              setSelectedServer(srv);
+              setStats((prev) => ({ ...prev, ping: srv.ping }));
+            }}
+            status={status}
+            onToggleConnection={handleToggleConnection}
+            stats={stats}
+          />
         )}
 
         {activeTab === 'code' && <AndroidCodeViewer />}
@@ -226,6 +271,14 @@ export default function App() {
             >
               <PackageCheck className="w-3.5 h-3.5" />
               <span>app-debug.apk</span>
+            </button>
+            <span className="text-slate-700">|</span>
+            <button
+              onClick={() => setActiveTab('logs')}
+              className="hover:text-emerald-400 transition-colors flex items-center gap-1 font-mono"
+            >
+              <Activity className="w-3.5 h-3.5 text-emerald-400" />
+              <span>Connection Logs</span>
             </button>
           </div>
         </div>

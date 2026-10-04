@@ -1,7 +1,7 @@
 import React from 'react';
 import { Download, Plus, Smartphone, FolderTree, Code2, Activity, PackageCheck, Terminal, Server, Globe, Sparkles } from 'lucide-react';
 
-export type NavTab = 'servers' | 'trio' | 'ip-check' | 'wg-conf' | 'wg-setup' | 'apk' | 'simulator' | 'code' | 'probe';
+export type NavTab = 'servers' | 'trio' | 'ip-check' | 'wg-conf' | 'wg-setup' | 'apk' | 'simulator' | 'code' | 'probe' | 'logs';
 
 interface NavbarProps {
   activeTab: NavTab;
@@ -114,6 +114,18 @@ export const Navbar: React.FC<NavbarProps> = ({
             <Smartphone className="w-4 h-4" />
             <span>Simulator</span>
           </button>
+
+          <button
+            onClick={() => setActiveTab('logs')}
+            className={`flex items-center gap-2 transition-colors pb-1 border-b-2 ${
+              activeTab === 'logs'
+                ? 'text-emerald-400 border-emerald-400 font-semibold'
+                : 'border-transparent text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <Activity className="w-4 h-4 text-emerald-400" />
+            <span>Connection Logs</span>
+          </button>
         </nav>
 
         {/* Zone 3: 1-2 primary actions */}
@@ -175,6 +187,13 @@ export const Navbar: React.FC<NavbarProps> = ({
           className={`px-2.5 py-1.5 rounded-lg ${activeTab === 'simulator' ? 'text-emerald-400 bg-slate-900 font-semibold' : 'hover:text-slate-200'}`}
         >
           Simulator
+        </button>
+        <button
+          onClick={() => setActiveTab('logs')}
+          className={`px-2.5 py-1.5 rounded-lg flex items-center gap-1 ${activeTab === 'logs' ? 'text-emerald-400 bg-slate-900 font-semibold' : 'hover:text-slate-200'}`}
+        >
+          <Activity className="w-3 h-3 text-emerald-400" />
+          <span>Logs</span>
         </button>
       </div>
     </header>
