@@ -1,4 +1,4 @@
-name: Build Android APK
+name: Build Signed Release AAB and APK
 
 on:
   push:
@@ -35,15 +35,33 @@ jobs:
           distribution: 'zulu'
           java-version: '21'
 
-      - name: Build APK with Gradle
+      # Secret থেকে Keystore ফাইল জেনারেট করা
+      - name: Decode Keystore
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/my-release-key.jks
+
+      # Signed AAB এবং APK তৈরি করা
+      - name: Build Release Bundle (AAB) & APK
         run: |
           cd android
           chmod +x gradlew
-          ./gradlew assembleDebug
+          ./gradlew bundleRelease assembleRelease \
+            -Pandroid.injected.signing.store.file=my-release-key.jks \
+            -Pandroid.injected.signing.store.password=${{ secrets.KEYSTORE_PASSWORD }} \
+            -Pandroid.injected.signing.key.alias=${{ secrets.KEY_ALIAS }} \
+            -Pandroid.injected.signing.key.password=${{ secrets.KEY_PASSWORD }}
 
-      - name: Upload APK Artifact
+      # Google Play Store-এর জন্য AAB আপলোড
+      - name: Upload Release AAB Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: app-debug
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          name: app-release-aab
+          path: android/app/build/outputs/bundle/release/app-release.aab
+
+      # Signed APK আপলোড
+      - name: Upload Release APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release-apk
+          path: android/app/build/outputs/apk/release/app-release.apk
 
