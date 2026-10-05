@@ -20,11 +20,16 @@ import { FolderCheck, Smartphone, Check, Download, PackageCheck, Terminal, Serve
 export default function App() {
   const [servers, setServers] = useState<ServerConfig[]>(INITIAL_SERVERS);
   const [selectedServer, setSelectedServer] = useState<ServerConfig>(INITIAL_SERVERS[4]); // Defaults to Bangladesh (Dhaka BDIX)
-  const [activeTab, setActiveTab] = useState<NavTab>('apk');
+  
+  // ==========================================
+  // FIX: Default tab changed to 'simulator' / 'servers'
+  // ==========================================
+  const [activeTab, setActiveTab] = useState<NavTab>('simulator');
+  
   const [isNewServerModalOpen, setIsNewServerModalOpen] = useState(false);
   const [editingServer, setEditingServer] = useState<ServerConfig | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
-
+  
   // VPN Connection simulation states
   const [status, setStatus] = useState<VpnConnectionStatus>('disconnected');
   const [stats, setStats] = useState<VpnStats>({
@@ -115,8 +120,6 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
-      
-      {/* Navbar with 3-Zone contract */}
       <Navbar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
@@ -125,9 +128,8 @@ export default function App() {
         serverCount={servers.length}
       />
 
-      {/* Main Content Area */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        
+
         {activeTab === 'trio' && (
           <FlagshipTrioViewer
             servers={servers}
@@ -182,19 +184,6 @@ export default function App() {
 
         {activeTab === 'simulator' && (
           <div className="space-y-6">
-            <div className="max-w-xl mx-auto text-center">
-              <div className="inline-flex items-center gap-2 text-emerald-400 font-mono text-xs mb-1">
-                <Smartphone className="w-4 h-4" />
-                <span>Interactive Android UI</span>
-              </div>
-              <h1 className="text-2xl font-bold text-white">
-                BanglaVpn33 Mobile App Simulator
-              </h1>
-              <p className="text-xs text-slate-400 mt-1">
-                Running <code className="text-emerald-300 font-mono">app/build/outputs/apk/debug/app-debug.apk</code>. Simulates how <code className="text-emerald-300 font-mono">MainActivity.kt</code> and <code className="text-emerald-300 font-mono">BanglaVpnService.kt</code> load and connect to configurations stored in <code className="text-emerald-300 font-mono">app/src/main/assets/servers/</code>.
-              </p>
-            </div>
-
             <MobileSimulator
               servers={servers}
               selectedServer={selectedServer}
@@ -237,7 +226,6 @@ export default function App() {
 
       </main>
 
-      {/* Footer */}
       <footer className="border-t border-slate-800/80 bg-slate-950 py-6 text-xs text-slate-500">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
@@ -284,7 +272,6 @@ export default function App() {
         </div>
       </footer>
 
-      {/* Toast Notice */}
       {toastMessage && (
         <div className="fixed bottom-6 right-6 z-50 bg-slate-900 border border-emerald-500/40 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-2.5 text-xs animate-in slide-in-from-bottom-2 duration-200">
           <Check className="w-4 h-4 text-emerald-400 shrink-0" />
@@ -292,7 +279,6 @@ export default function App() {
         </div>
       )}
 
-      {/* Config Editor Modal */}
       {editingServer && (
         <ConfigEditorModal
           server={editingServer}
@@ -302,7 +288,6 @@ export default function App() {
         />
       )}
 
-      {/* New Server Modal */}
       <NewServerModal
         isOpen={isNewServerModalOpen}
         onClose={() => setIsNewServerModalOpen(false)}
