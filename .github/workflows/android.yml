@@ -19,10 +19,15 @@ jobs:
           node-version: 22
 
       - name: Install Dependencies
-        run: npm install --legacy-peer-deps
+        run: |
+          npm install --legacy-peer-deps
+          npm install @capacitor/cli --save-dev
 
       - name: Build Web App
         run: npm run build --if-present
+
+      - name: Sync Capacitor Android
+        run: npx cap sync android
 
       - name: Setup Java JDK
         uses: actions/setup-java@v4
@@ -41,3 +46,4 @@ jobs:
         with:
           name: app-debug
           path: android/app/build/outputs/apk/debug/app-debug.apk
+
