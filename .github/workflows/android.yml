@@ -35,30 +35,30 @@ jobs:
           distribution: 'zulu'
           java-version: '21'
 
-      # Secret থেকে Keystore ফাইল জেনারেট করা
+      # Decode Keystore file from Secrets
       - name: Decode Keystore
         run: |
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/my-release-key.jks
 
-      # Signed AAB এবং APK তৈরি করা
+      # Build Signed Release AAB and APK
       - name: Build Release Bundle (AAB) & APK
         run: |
           cd android
           chmod +x gradlew
           ./gradlew bundleRelease assembleRelease \
-            -Pandroid.injected.signing.store.file=my-release-key.jks \
+            -Pandroid.injected.signing.store.file=$GITHUB_WORKSPACE/android/app/my-release-key.jks \
             -Pandroid.injected.signing.store.password=${{ secrets.KEYSTORE_PASSWORD }} \
             -Pandroid.injected.signing.key.alias=${{ secrets.KEY_ALIAS }} \
             -Pandroid.injected.signing.key.password=${{ secrets.KEY_PASSWORD }}
 
-      # Google Play Store-এর জন্য AAB আপলোড
+      # Upload AAB Artifact for Google Play Store
       - name: Upload Release AAB Artifact
         uses: actions/upload-artifact@v4
         with:
           name: app-release-aab
           path: android/app/build/outputs/bundle/release/app-release.aab
 
-      # Signed APK আপলোড
+      # Upload Signed Release APK Artifact
       - name: Upload Release APK Artifact
         uses: actions/upload-artifact@v4
         with:
