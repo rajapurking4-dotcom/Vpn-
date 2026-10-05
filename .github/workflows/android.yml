@@ -45,12 +45,18 @@ jobs:
         run: |
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/my-release-key.jks
 
-      # Build Signed Release AAB and APK
-      - name: Build Release Bundle (AAB) & APK
+      # Build Signed Release AAB
+      - name: Build Release Bundle (AAB)
         run: |
           cd android
           chmod +x gradlew
-          ./gradlew bundleRelease assembleRelease -Pandroid.injected.signing.store.file=$GITHUB_WORKSPACE/android/app/my-release-key.jks -Pandroid.injected.signing.store.password=${{ secrets.KEYSTORE_PASSWORD }} -Pandroid.injected.signing.key.alias=${{ secrets.KEY_ALIAS }} -Pandroid.injected.signing.key.password=${{ secrets.KEY_PASSWORD }}
+          ./gradlew bundleRelease -Pandroid.injected.signing.store.file=$GITHUB_WORKSPACE/android/app/my-release-key.jks -Pandroid.injected.signing.store.password=${{ secrets.KEYSTORE_PASSWORD }} -Pandroid.injected.signing.key.alias=${{ secrets.KEY_ALIAS }} -Pandroid.injected.signing.key.password=${{ secrets.KEY_PASSWORD }}
+
+      # Build Signed Release APK
+      - name: Build Release APK
+        run: |
+          cd android
+          ./gradlew assembleRelease -Pandroid.injected.signing.store.file=$GITHUB_WORKSPACE/android/app/my-release-key.jks -Pandroid.injected.signing.store.password=${{ secrets.KEYSTORE_PASSWORD }} -Pandroid.injected.signing.key.alias=${{ secrets.KEY_ALIAS }} -Pandroid.injected.signing.key.password=${{ secrets.KEY_PASSWORD }}
 
       # Upload AAB Artifact
       - name: Upload Release AAB Artifact
