@@ -1,5 +1,9 @@
 {
 	"appId": "com.banglavpn33.vpn",
 	"appName": "Bangla VPN 33",
-	"webDir": "dist"
+	"webDir": "dist",
+	"server": {
+		"cleartext": true,
+		"androidScheme": "https"
+	}
 }
